@@ -9,5 +9,5 @@ set(Headers
 )
 
 add_executable(Sfinae ${Sources})
+target_link_libraries(Sfinae Utilities)
 add_dependencies(Sfinae Utilities)
-include_directories(${Utilities_Include_Directory})

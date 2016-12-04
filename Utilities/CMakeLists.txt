@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.4)
 set(TargetName Utilities)
 set(TargetName_CreateTest ${TargetName}_CreateTest)
 set(${TargetName}_Dir "Inc/${TargetName}")
-set(${TargetName}_Include_Directory "${TargetName}/Inc" PARENT_SCOPE)
+set(${TargetName}_Include_Directory "${TargetName}/Inc")
 
 set(Sources
     Src/Timer.cpp
@@ -16,6 +16,7 @@ set(Headers
 # Utilities library
 add_library(${TargetName} STATIC ${Headers} ${Sources})
 include_directories(Inc)
+target_include_directories(${TargetName} PUBLIC Inc)
 
 set(${TargetName_CreateTest} OFF CACHE BOOL "Enable '${TargetName}' test code.")
 if(${TargetName_CreateTest})
