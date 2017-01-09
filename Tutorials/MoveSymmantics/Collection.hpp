@@ -23,20 +23,12 @@ public:
 
     Collection& operator=(const Collection& rCollection);
 
-#if ENABLE_MOVE
     Collection(Collection&& rCollection);
     Collection& operator=(Collection&& rCollection);
-#endif
 
     T& operator[](int32_t index);
     const T& operator[](int32_t index) const;
-
-
-    size_t size() const
-    {
-        return mSize;
-    }
-
+    size_t size() const;
 private:
     size_t mSize;
     std::unique_ptr<T[]> mpData;
@@ -176,3 +168,9 @@ const T& Collection<T>::operator[](int32_t index) const
 }
 
 ////////////////////////////////////////////////////////
+
+template <class T>
+size_t Collection<T>::size() const
+{
+    return mSize;
+}
