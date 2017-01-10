@@ -86,14 +86,14 @@ void Fit(
     {
         const auto offsetPoint0 = (pPoints0[i] - centroid0).eval();
         const auto offsetPoint1 = (pPoints1[i] - centroid1).eval();
-        matrixSum += offsetPoint0 * offsetPoint1.transpose();
+        matrixSum += offsetPoint1 * offsetPoint0.transpose();
     }
 
     const Eigen::JacobiSVD<Matrix> svd(
          matrixSum, Eigen::ComputeFullU | Eigen::ComputeFullV);
     const Matrix u = svd.matrixU();
     const Matrix v = svd.matrixV();
-    const Matrix rotation = v * u.transpose();
+    const Matrix rotation = u * v.transpose();
 
     rParams.mRotation = Eigen::Quaterniond(rotation.cast<double>()).normalized();
     rParams.mTranslation = (centroid1 - rotation * centroid0).cast<double>();
