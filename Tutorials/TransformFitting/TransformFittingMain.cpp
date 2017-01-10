@@ -102,6 +102,8 @@ void Check(
     std::cout << "Est. Error Sum: " << estErrorSum << " m\n";
 }
 
+///////////////////////////////////////////////
+
 template <class T>
 double ComputeErrorSum(
     const Transform::Params& rParams,
@@ -123,7 +125,7 @@ double ComputeErrorSum(
     double errorSum = 0.0;
     for (size_t i = 0; i < numOfPoints; ++i)
     {
-        const auto delta = transform * rPoints0[i] - rPoints1[i];
+        const auto delta = (transform * rPoints0[i]) - rPoints1[i];
         errorSum += delta.norm();
     }
 
@@ -196,6 +198,7 @@ void GenerateTransform(
 
     const std::uniform_real_distribution<double> distAngle(0.0, 2.0 * M_PI);
     const double angleRad = distAngle(rGenerator);
+    //const double angleRad = 0.0;
     const Eigen::AngleAxis<T::Scalar> rotation(angleRad, axis);
     const Eigen::Quaternion<T::Scalar> quaternion(rotation);
 

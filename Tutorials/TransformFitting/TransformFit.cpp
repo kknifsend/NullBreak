@@ -35,6 +35,9 @@ void Fit(
 
 ///////////////////////////////////////////////
 
+/*
+https://pdfs.semanticscholar.org/b191/4c55ec9d21588c35dbf6a85f2d9631bb94cf.pdf
+*/
 template void Fit<Eigen::Vector3d>(
     const Eigen::Vector3d* pPoints0,
     const Eigen::Vector3d* pPoints1,
@@ -79,14 +82,24 @@ void Fit(
     Matrix matrixSum = Matrix::Zero();
     for (size_t i = 0; i < numOfPoints; ++i)
     {
-        matrixSum += (pPoints0[i] - centroid0) * (pPoints1[i] - centroid1).transpose();
+        const auto offsetPoint0 = pPoints0[i] - centroid0;
+        const auto offsetPoint1 = pPoints1[i] - centroid1;
+        matrixSum += offsetPoint1 * offsetPoint0.transpose();
     }
 
-    const Eigen::JacobiSVD<Matrix> svd(
-        matrixSum, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    const auto m2 = matrixSum * matrixSum.transpose();
+
+    /*const Eigen::JacobiSVD<Matrix> svd(
+        m2, Eigen::ComputeFullU | Eigen::ComputeFullV);
     const Matrix u = svd.matrixU();
     const Matrix v = svd.matrixV();
-    const Matrix rotation = u * v.transpose();
+    const Matrix rotation = u * v.transpose();*/
+
+    Eigen::EigenSolver<Matrix> solver;
+    solver.compute(m2);
+
+    Matrix rotation;
+
 
     rParams.mTranslation = (centroid1 - centroid0).cast<double>();
     rParams.mRotation = Eigen::Quaterniond(rotation.cast<double>());

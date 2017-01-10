@@ -22,6 +22,7 @@ typedef Points<Eigen::Vector2d> Points2f;
 template <class T>
 void Fit(const Points<T>& rPoints0, const Points<T>& rPoints1, Params& rParams);
 
+// Finds a transformation from pointset 0 to pointset 1.
 template <class T>
 void Fit(
     const T* pPoints0, const T* pPoints1,
