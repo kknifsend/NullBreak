@@ -195,10 +195,11 @@ void GenerateTransform(
         axis[i] = distExtent(rGenerator);
     }
     axis.normalize();
+    //translation.setZero();
 
     const std::uniform_real_distribution<double> distAngle(0.0, 2.0 * M_PI);
     const double angleRad = distAngle(rGenerator);
-    //const double angleRad = 0.0;
+    //const double angleRad = M_PI / 2.0;
     const Eigen::AngleAxis<T::Scalar> rotation(angleRad, axis);
     const Eigen::Quaternion<T::Scalar> quaternion(rotation);
 
