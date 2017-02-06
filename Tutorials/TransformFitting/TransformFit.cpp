@@ -3,6 +3,8 @@
 
 #include <Eigen/Dense>
 
+#include <iostream>
+
 namespace Transform
 {
 
@@ -90,13 +92,16 @@ void Fit(
     }
 
     const Eigen::JacobiSVD<Matrix> svd(
-         matrixSum, Eigen::ComputeFullU | Eigen::ComputeFullV);
+        matrixSum, Eigen::ComputeFullU | Eigen::ComputeFullV);
     const Matrix u = svd.matrixU();
     const Matrix v = svd.matrixV();
     const Matrix rotation = u * v.transpose();
 
     rParams.mRotation = Eigen::Quaterniond(rotation.cast<double>()).normalized();
     rParams.mTranslation = (centroid1 - rotation * centroid0).cast<double>();
+
+    std::cout << "MatrixSum:\n" << matrixSum << '\n';
+    std::cout << "Est Rotation:\n" << rotation << '\n';
 }
 
 //template <>

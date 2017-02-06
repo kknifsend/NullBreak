@@ -39,8 +39,8 @@ void GenerateTransform(
 
 int main()
 {
+#if 0
     const size_t numOfPoints = 100000;
-
     // Generate data
     Transform::Points<Eigen::Vector3d> points0, points1;
     GenerateData(numOfPoints, points0);
@@ -56,6 +56,63 @@ int main()
 
     std::cout << "Result Statistics\n";
     Check(origParams, estParams, points0, points1);
+#else
+    // Construct rotation matrix
+    const double angleDeg = 90.0;
+    const double angleRad = angleDeg * M_PI / 180.0;
+    const Eigen::Vector3d axis = Eigen::Vector3d::UnitZ();
+    const Eigen::Matrix3d orgRotation =
+        Eigen::AngleAxisd(angleRad, axis).toRotationMatrix();
+
+    // Create points
+    //const Eigen::Vector3d points0[3] =
+    //{
+    //    Eigen::Vector3d::UnitX(),
+    //    Eigen::Vector3d::UnitY(),
+    //    Eigen::Vector3d::UnitZ()
+    //};
+
+    const Eigen::Vector3d points0[3] =
+    {
+        Eigen::Vector3d(1.0, 1.0, 0.0).normalized(),
+        Eigen::Vector3d(0.0, 1.0, 1.0).normalized(),
+        Eigen::Vector3d(1.0, 0.0, 1.0).normalized()
+    };
+
+    Eigen::Matrix3d matrixSum = Eigen::Matrix3d::Zero();
+    for (uint8_t i = 0; i < 3; ++i)
+    {
+        const Eigen::Vector3d point1 = orgRotation * points0[i];
+
+        std::cout << "Points i=" << (int)i << '\n';
+        printf("Point0: <%lf, %lf, %lf>\n",
+               points0[i][0], points0[i][1], points0[i][2]);
+        printf("Point1: <%lf, %lf, %lf>\n",
+               point1[0], point1[1], point1[2]);
+        std::cout << '\n';
+
+        matrixSum += point1 * points0[i].transpose();
+    }
+
+    const Eigen::JacobiSVD<Eigen::Matrix3d> svd(
+        matrixSum, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    const Eigen::Matrix3d u = svd.matrixU();
+    const Eigen::Matrix3d v = svd.matrixV();
+    const Eigen::Matrix3d estRotation = u * v.transpose();
+
+    Eigen::Matrix3d tempTest = matrixSum;
+    tempTest.col(0).normalize();
+    tempTest.col(1).normalize();
+    tempTest.col(2).normalize();
+
+    std::cout << "Org Rotation:\n" << orgRotation << "\n\n";
+
+    std::cout << "MatrixSum:\n" << matrixSum << "\n\n";
+
+    std::cout << "TempTest:\n" << tempTest << "\n\n";
+
+    std::cout << "Est Rotation:\n" << estRotation << "\n\n";
+#endif
 
     std::cin.get();
     return 0;
