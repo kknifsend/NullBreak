@@ -3,13 +3,19 @@
 #include <Eigen/Dense>
 #include <vector>
 
-namespace Transform
+namespace Transformation
 {
 
 struct Params
 {
     Eigen::Vector3d mTranslation;
     Eigen::Quaterniond mRotation;
+    double mScale;
+
+    Params()
+        : mTranslation(Eigen::Vector3d::Zero()),
+          mRotation(Eigen::Quaterniond::Identity()), mScale(1.0)
+    {}
 };
 
 template<class T>
